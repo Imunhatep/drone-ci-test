@@ -1,31 +1,19 @@
-FROM golang:alpine AS build-env
+FROM golang:alpine as builder
 
 ENV GO111MODULE=on \
-    CGO_ENABLED=1
+    CGO_ENABLED=0 \
+    GOOS=linux
+
+RUN mkdir /build
+
+ADD . /build/
 
 WORKDIR /build
-
-# Let's cache modules retrieval - those don't change so often
-#COPY go.mod .
-#COPY go.sum .
-#RUN go mod download
-
-# Copy the code necessary to build the application
-# You may want to change this to copy only what you actually need.
-COPY . .
-
-ADD . /build
-
-# Build the application
-RUN go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o app .
-
-# Let's create a /dist folder containing just the files necessary for runtime.
-# Later, it will be copied as the / (root) of the output image.
-WORKDIR /dist
-RUN cp /build/my-awesome-go-program ./my-awesome-go-program
-
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o main .
 
 FROM scratch
+
+COPY --from=builder /build/main /app/
+
 WORKDIR /app
-COPY --from=build-env /go/src/app/app .
-ENTRYPOINT [ "./app" ]
+CMD ["./main"]

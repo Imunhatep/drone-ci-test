@@ -5,11 +5,11 @@ steps:
 - name: test
   image: golang:1.14-alpine
   commands:
-  - "GO111MODULE=on CGO_ENABLED=0 go test"
+  - "GO111MODULE=on CGO_ENABLED=0 GOOS=linux go test"
 - name: build
   image: golang:1.14-alpine
   commands:
-  - "GO111MODULE=on CGO_ENABLED=0 go build -o ./build"
+  - "GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags \"-static\"' -o ./main"
 #- name: publish
 # image: plugins/docker
 # settings:
