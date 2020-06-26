@@ -3,13 +3,13 @@ type: kubernetes
 name: default
 steps:
 - name: test
-  image: golang:1.12-alpine
+  image: golang:1.14-alpine
   commands:
-  - "go test"
+  - "GO111MODULE=on CGO_ENABLED=0 go test"
 - name: build
-  image: golang:1.12-alpine
+  image: golang:1.14-alpine
   commands:
-  - "go build -o ./build"
+  - "GO111MODULE=on CGO_ENABLED=0 go build -o ./build"
 #- name: publish
 # image: plugins/docker
 # settings:
