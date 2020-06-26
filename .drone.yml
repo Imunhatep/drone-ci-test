@@ -3,13 +3,13 @@ type: kubernetes
 name: default
 steps:
 - name: test
- image: golang:1.12-alpine
- commands:
-   - "go test"
+  image: golang:1.12-alpine
+  commands:
+  - "go test"
 - name: build
- image: golang:1.12-alpine
- commands:
-   - "go build -o ./build"
+  image: golang:1.12-alpine
+  commands:
+  - "go build -o ./build"
 #- name: publish
 # image: plugins/docker
 # settings:
