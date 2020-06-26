@@ -1,0 +1,21 @@
+kind: pipeline
+name: default
+steps:
+- name: test
+ image: golang:1.12-alpine
+ commands:
+   - "go test"
+- name: build
+ image: golang:1.12-alpine
+ commands:
+   - "go build -o ./build"
+- name: publish
+ image: plugins/docker
+ settings:
+   repo: magalixcorp/k8scicd
+   tags: [ "${DRONE_COMMIT_SHA:0:7}","latest" ]
+   username:
+     from_secret: docker_username
+   password:
+     from_secret: docker_password
+
